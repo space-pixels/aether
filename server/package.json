@@ -15,10 +15,12 @@
   "scripts": {
     "prepack": "tsc -b"
   },
+  "peerDependencies": {
+    "protobufjs": "^6.0.0"
+  },
   "dependencies": {
-    "protobufjs": "^6.11.2",
-    "typescript": "4.3.5",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v19.2.0"
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v19.2.0",
+    "typescript": "4.3.5"
   },
   "devDependencies": {
     "@types/node": "^16.11.4",
