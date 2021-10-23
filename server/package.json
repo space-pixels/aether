@@ -1,5 +1,5 @@
 {
-  "name": "@aether/server",
+  "name": "@space-pixels/aether-server",
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "node": ">=v15.5.1"
   },
   "scripts": {
-    "build": "tsc -b"
+    "prepack": "tsc -b"
   },
   "dependencies": {
     "protobufjs": "^6.11.2",
