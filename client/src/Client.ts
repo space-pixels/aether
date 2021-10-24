@@ -1,4 +1,3 @@
-
 import { Message } from 'protobufjs/light'
 import { Observable } from 'rxjs'
 import { v4 } from 'uuid'
@@ -13,6 +12,7 @@ export interface ClientOptions {
   host: string
   port: number
   path: string
+  ssl: boolean
 }
 
 export abstract class Client implements ConnectionDelegate, MessageHandlerTarget, TransactionHandlerTarget, SubscriptionHandlerTarget {
@@ -29,11 +29,11 @@ export abstract class Client implements ConnectionDelegate, MessageHandlerTarget
 
   constructor(public options: ClientOptions, public userId: string) {
     this.socket = new Socket(this, userId)
-    this.connection = new Connection({ uri: `ws://${options.host}:${options.port}${options.path}/${userId}` }, this)
+    this.connection = new Connection({ uri: `${options.ssl ? 'wss' : 'ws'}://${options.host}:${options.port}${options.path}/${userId}` }, this)
   }
 
   async connect() {
-    this.connection = await Connection.connect({ uri: `ws://${this.options.host}:${this.options.port}${this.options.path}/${this.userId}` }, this)
+    this.connection = await Connection.connect({ uri: `${this.options.ssl ? 'wss' : 'ws'}://${this.options.host}:${this.options.port}${this.options.path}/${this.userId}` }, this)
   }
 
   subscribe<T extends Message>(type: { $type: { name: string }, new(): T }, next: (value: T) => void) {
