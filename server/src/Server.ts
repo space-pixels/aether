@@ -60,8 +60,14 @@ export abstract class Server<S> implements MessageHandlerTarget, TransactionHand
   }
 
   connect() {
-    return new Promise<void>((resolve) => {
-      this.app.listen(this.options.port, () => { resolve() })
+    return new Promise<void>((resolve, reject) => {
+      this.app.listen(this.options.port, (socket) => {
+        if (socket) {
+          resolve(socket)
+        } else {
+          reject(new Error(`Unable to listen to port ${this.options.port}`))
+        }
+      })
     })
   }
 
