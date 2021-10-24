@@ -1,4 +1,4 @@
-import { App, DISABLED, HttpRequest, HttpResponse, TemplatedApp, us_socket_context_t, WebSocket, WebSocketBehavior } from 'uWebSockets.js'
+import { App, AppOptions, HttpRequest, HttpResponse, SSLApp, TemplatedApp, us_socket_context_t, WebSocket, WebSocketBehavior } from 'uWebSockets.js'
 import { Client } from './Client'
 import { MessageHandler, MessageHandlerTarget } from './Message'
 import { Packet } from './Packet'
@@ -10,6 +10,7 @@ export interface ServerOptions {
   host: string
   port: number
   behavior?: WebSocketBehavior
+  app: AppOptions
 }
 
 export abstract class Server<S> implements MessageHandlerTarget, TransactionHandlerTarget {
@@ -19,10 +20,9 @@ export abstract class Server<S> implements MessageHandlerTarget, TransactionHand
   public transactionHandlers!: Map<string, TransactionHandler>
 
   constructor(private options: ServerOptions) {
-    this.app = App().ws(options.wsPath, {
-      idleTimeout: 120,
-      compression: DISABLED,
-      maxPayloadLength: 1024 * 1024,
+    this.app = options.app.cert_file_name ? SSLApp(options.app) : App(options.app)
+    this.app.ws(options.wsPath, {
+      ...options.behavior,
       upgrade: (res: HttpResponse, req: HttpRequest, context: us_socket_context_t) => {
         const headers: { [id: string]: string } = {}
         req.forEach((key, value) => headers[key] = value)
@@ -55,8 +55,7 @@ export abstract class Server<S> implements MessageHandlerTarget, TransactionHand
         if (!client) { return }
         this.clients.splice(this.clients.indexOf(client), 1)
         this.onClose(client)
-      },
-      ...options.behavior
+      }
     })
   }
 
