@@ -18,7 +18,9 @@ export abstract class Client implements ConnectionDelegate, MessageHandlerTarget
   abstract onClose(event: CloseEvent): void
   abstract onError(event: Event): void
 
-  constructor(private connection: Connection) { }
+  constructor(private connection: Connection) {
+    connection.setDelegate(this)
+  }
 
   async connect(userId: string) {
     this.socket = new Socket(this, userId)
