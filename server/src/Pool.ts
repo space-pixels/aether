@@ -1,4 +1,4 @@
-import { Client } from './Client'
+import { Client } from './Adapter'
 
 export class Pool {
   constructor(private sockets: Set<Client>) { }

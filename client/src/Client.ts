@@ -8,32 +8,21 @@ import { Socket } from './Socket'
 import { SubscriptionHandler, SubscriptionHandlerTarget } from './Subscription'
 import { Transaction, TransactionHandlerTarget } from './Transaction'
 
-export interface ClientOptions {
-  host: string
-  port: number
-  path: string
-  ssl: boolean
-}
-
 export abstract class Client implements ConnectionDelegate, MessageHandlerTarget, TransactionHandlerTarget, SubscriptionHandlerTarget {
   public messageHandlers!: Map<string, MessageHandler>
   public transactionHandlers = new Map<string, MessageHandler>()
   public subscriptionHandlers = new Map<string, SubscriptionHandler>()
   public socket!: Socket
 
-  private connection: Connection
-
   abstract onOpen(event: Event): void
   abstract onClose(event: CloseEvent): void
   abstract onError(event: Event): void
 
-  constructor(public options: ClientOptions, public userId: string) {
-    this.socket = new Socket(this, userId)
-    this.connection = new Connection({ uri: `${options.ssl ? 'wss' : 'ws'}://${options.host}:${options.port}${options.path}/${userId}` }, this)
-  }
+  constructor(private connection: Connection) { }
 
-  async connect() {
-    this.connection = await Connection.connect({ uri: `${this.options.ssl ? 'wss' : 'ws'}://${this.options.host}:${this.options.port}${this.options.path}/${this.userId}` }, this)
+  async connect(userId: string) {
+    this.socket = new Socket(this, userId)
+    await this.connection.connect(userId)
   }
 
   subscribe<T extends Message>(type: { $type: { name: string }, new(): T }, next: (value: T) => void) {

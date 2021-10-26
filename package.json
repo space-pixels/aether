@@ -5,5 +5,5 @@
   "license": "MIT",
   "engines": { "node": ">=v15.5.1" },
   "private": true,
-  "workspaces": ["client", "server"]
+  "workspaces": ["client", "server", "adapters/*"]
 }

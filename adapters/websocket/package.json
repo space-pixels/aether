@@ -1,13 +1,13 @@
 {
-  "name": "@space-pixels/aether-client",
-  "version": "1.0.6",
+  "name": "@space-pixels/aether-adapter-websocket",
+  "version": "1.0.7",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/space-pixels/aether.git",
-    "directory": "client"
+    "directory": "adapters/webspcket"
   },
   "engines": {
     "node": ">=v15.5.1"
@@ -16,18 +16,14 @@
     "prepack": "tsc -b"
   },
   "peerDependencies": {
-    "protobufjs": "^6.0.0",
-    "rxjs": "^7.0.0",
-    "uuid": "^8.0.0"
+    "protobufjs": "^6.0.0"
   },
   "dependencies": {
     "protobufjs": "^6.0.0",
-    "rxjs": "^7.0.0",
-    "uuid": "^8.0.0"
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v19.2.0"
   },
   "devDependencies": {
     "typescript": "^4.0.0",
-    "@types/node": "^16.11.4",
-    "@types/uuid": "^8.0.0"
+    "@types/node": "^16.11.4"
   }
 }

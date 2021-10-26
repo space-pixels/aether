@@ -1,5 +1,7 @@
 export * from './Client'
 export * from './Connection'
+export * from './connections/DirectConnection'
+export * from './connections/WebsocketConnection'
 export * from './index'
 export * from './Message'
 export * from './Packet'

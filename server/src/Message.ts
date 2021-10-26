@@ -1,5 +1,5 @@
 import { Constructor, Message } from 'protobufjs/light'
-import { Client } from './Client'
+import { Client } from './Adapter'
 
 export interface MessageHandlerTarget {
   messageHandlers: Map<string, MessageHandler>
