@@ -13,7 +13,7 @@ export interface AdapterDelegate {
 export interface Adapter<T extends Client> {
   clients: T[]
   setDelegate(delegate: AdapterDelegate): void
-  connect(userId: string): Promise<void>
+  connect(): Promise<void>
 }
 
 export class DirectAdapter implements Adapter<DirectAdapter>, Client {
@@ -21,13 +21,16 @@ export class DirectAdapter implements Adapter<DirectAdapter>, Client {
   public userId!: string
   private connected = false
 
+  constructor(userId: string) {
+    this.userId = userId
+  }
+
   setDelegate(delegate: AdapterDelegate) {
     this.delegate = delegate
   }
 
-  async connect(userId: string) {
+  async connect() {
     if (this.connected) { return }
-    this.userId = userId
     this.delegate.onOpen(this)
   }
 

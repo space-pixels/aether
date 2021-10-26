@@ -16,7 +16,7 @@ export interface AdapterDelegate {
 export interface Adapter<T extends Client> {
   clients: T[]
   setDelegate(delegate: AdapterDelegate): void
-  connect(userId: string): Promise<void>
+  connect(): Promise<void>
 }
 
 export interface AdapterOptions {
