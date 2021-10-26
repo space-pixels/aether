@@ -1,10 +1,13 @@
 {
   "name": "@space-pixels/aether",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "index.js",
   "license": "MIT",
   "engines": {
     "node": ">=v15.5.1"
+  },
+  "scripts": {
+    "bump-version": "yarn version apply --all --recursive --new-version"
   },
   "private": true,
   "workspaces": [
