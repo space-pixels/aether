@@ -1,6 +1,6 @@
 {
   "name": "@space-pixels/aether-adapter-direct",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "license": "MIT",
