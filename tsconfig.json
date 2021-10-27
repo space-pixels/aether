@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@space-pixels/aether-adapter-direct": ["packages/adapter-direct/src"],
+      "@space-pixels/aether-adapter-websocket": ["packages/adapter-websocket/src"],
+      "@space-pixels/aether-client": ["packages/client/src"],
+      "@space-pixels/aether-core": ["packages/core/src"],
+      "@space-pixels/aether-server": ["packages/server/src"]
+    },
+    "noEmit": true
+  }
+}

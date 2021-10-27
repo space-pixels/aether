@@ -1,3 +1,5 @@
+import { ConnectionDelegate, Socket } from './Socket'
+
 export interface Client<S = any> {
   userId: string
   state?: S
@@ -16,13 +18,15 @@ export interface Adapter<T extends Client> {
   connect(): Promise<void>
 }
 
-export class DirectAdapter implements Adapter<DirectAdapter>, Client {
+export class DirectAdapter implements Adapter<DirectAdapter> {
   public delegate!: AdapterDelegate
   public userId!: string
-  private connected = false
+  public client: Socket
+  public connected = false
 
-  constructor(userId: string) {
+  constructor(userId: string, delegate: ConnectionDelegate) {
     this.userId = userId
+    this.client = new Socket(userId, delegate)
   }
 
   setDelegate(delegate: AdapterDelegate) {
@@ -31,6 +35,7 @@ export class DirectAdapter implements Adapter<DirectAdapter>, Client {
 
   async connect() {
     if (this.connected) { return }
+    this.connected = true
     this.delegate.onOpen(this)
   }
 

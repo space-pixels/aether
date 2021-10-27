@@ -3,10 +3,19 @@
   "version": "1.1.2",
   "main": "index.js",
   "license": "MIT",
-  "engines": { "node": ">=v15.5.1" },
+  "engines": {
+    "node": ">=v15.5.1"
+  },
   "private": true,
-  "workspaces": ["core", "client", "server", "adapters/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "prepack": "yarn workspaces run prepack"
+    "serve": "yarn workspaces run serve",
+    "prepack": "yarn workspaces run prepack",
+    "clean": "yarn workspaces run clean"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }

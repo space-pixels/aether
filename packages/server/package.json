@@ -1,5 +1,5 @@
 {
-  "name": "@space-pixels/aether-adapter-direct",
+  "name": "@space-pixels/aether-server",
   "version": "1.1.2",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -7,18 +7,19 @@
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com/space-pixels/aether.git",
-    "directory": "adapters/direct"
+    "directory": "server"
   },
   "engines": {
     "node": ">=v15.5.1"
   },
   "scripts": {
-    "prepack": "tsc -b"
-  },
-  "peerDependencies": {
-    "protobufjs": "^6.0.0"
+    "serve": "tsc -p tsconfig.build.json -w",
+    "prepack": "yarn clean && yarn build",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rimraf -rf ./build"
   },
   "dependencies": {
+    "@space-pixels/aether-core": "*",
     "protobufjs": "^6.0.0"
   },
   "devDependencies": {

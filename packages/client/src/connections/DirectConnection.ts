@@ -1,11 +1,17 @@
+import { AdapterDelegate } from '@space-pixels/aether-core'
 import { Connection, ConnectionDelegate } from '../Connection'
 
 export class DirectConnection implements Connection {
   public delegate!: ConnectionDelegate
-  public userId?: string
+  public adapter!: AdapterDelegate
+  public userId!: string
 
   setDelegate(delegate: ConnectionDelegate) {
     this.delegate = delegate
+  }
+
+  setAdapter(adapter: AdapterDelegate) {
+    this.adapter = adapter
   }
 
   async connect(userId: string) {
@@ -14,8 +20,7 @@ export class DirectConnection implements Connection {
   }
 
   public send(data: ArrayBuffer): void {
-    const event = new MessageEvent<ArrayBuffer>('message', { data })
-    this.delegate.onMessage(event)
+    this.adapter.onMessage(this, data)
   }
 
   public close() {
