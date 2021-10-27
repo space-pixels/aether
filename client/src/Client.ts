@@ -1,12 +1,10 @@
+import { MessageConstructor, MessageHandler, MessageHandlerTarget, Packet, Transaction, TransactionHandlerTarget } from '@space-pixels/aether-core'
 import { Message } from 'protobufjs/light'
 import { Observable } from 'rxjs'
 import { v4 } from 'uuid'
 import { Connection, ConnectionDelegate } from './Connection'
-import { MessageConstructor, MessageHandler, MessageHandlerTarget } from './Message'
-import { Packet } from './Packet'
 import { Socket } from './Socket'
 import { SubscriptionHandler, SubscriptionHandlerTarget } from './Subscription'
-import { Transaction, TransactionHandlerTarget } from './Transaction'
 
 export abstract class Client implements ConnectionDelegate, MessageHandlerTarget, TransactionHandlerTarget, SubscriptionHandlerTarget {
   public messageHandlers!: Map<string, MessageHandler>

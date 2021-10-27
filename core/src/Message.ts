@@ -1,16 +1,14 @@
 import { Constructor, Message } from 'protobufjs/light'
+import { Client } from './Adapter'
 
 export interface MessageHandlerTarget {
   messageHandlers: Map<string, MessageHandler>
 }
 
-export type MessageHandlerCallback<T extends Message = Message> = (message: T) => void
+export type MessageHandlerCallback<T extends Message = Message> = (message: T, client?: Client) => void
 
 export interface MessageConstructor<T extends Message = Message> extends Constructor<T> {
-  $type: {
-    name: string
-    decode: (data: Uint8Array) => T
-  }
+  $type: { name: string, decode: (data: Uint8Array) => T }
 }
 
 export interface MessageHandler<T extends Message = Message> {

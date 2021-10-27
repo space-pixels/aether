@@ -1,4 +1,4 @@
-import { Client } from './Adapter'
+import { Client } from '@space-pixels/aether-core'
 
 export class Pool {
   constructor(private sockets: Set<Client>) { }

@@ -1,9 +1,12 @@
 {
   "name": "@space-pixels/aether",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "main": "index.js",
   "license": "MIT",
   "engines": { "node": ">=v15.5.1" },
   "private": true,
-  "workspaces": ["client", "server", "adapters/*"]
+  "workspaces": ["core", "client", "server", "adapters/*"],
+  "scripts": {
+    "prepack": "yarn workspaces run prepack"
+  }
 }

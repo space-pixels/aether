@@ -1,12 +1,8 @@
+import { Adapter, AdapterDelegate, Client, MessageHandler, MessageHandlerTarget, Packet, TransactionHandler, TransactionHandlerTarget } from '@space-pixels/aether-core'
 import { Message } from 'protobufjs/light'
-import { AdapterDelegate } from '.'
-import { Adapter, Client } from './Adapter'
-import { MessageHandler, MessageHandlerTarget } from './Message'
-import { Packet } from './Packet'
 import { Pool } from './Pool'
-import { TransactionHandler, TransactionHandlerTarget } from './Transaction'
 
-export abstract class Server<S> implements MessageHandlerTarget, TransactionHandlerTarget, AdapterDelegate {
+export abstract class Server<S> implements MessageHandlerTarget, TransactionHandlerTarget<TransactionHandler>, AdapterDelegate {
   public messageHandlers!: Map<string, MessageHandler>
   public transactionHandlers!: Map<string, TransactionHandler>
 
@@ -39,7 +35,7 @@ export abstract class Server<S> implements MessageHandlerTarget, TransactionHand
     const handler = this.messageHandlers?.get(name)
     if (!handler) { throw new Error(`no message handler defined for ${name}`) }
     const message = handler.type.$type.decode(bytes)
-    handler.callback.call(this, client, message)
+    handler.callback.call(this, message, client)
   }
 
   protected async onMessageTransaction(client: Client<S>, { name, bytes, transactionId }: Packet) {
