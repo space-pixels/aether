@@ -48,5 +48,5 @@ export abstract class Server<S extends object> implements MessageHandlerTarget, 
     this.adapter.send(session, Packet.encode(packet).finish())
   }
 
-  get pool() { return new Pool<S>(new Set(this.adapter.sessions)) }
+  get pool() { return new Pool<S>(this.adapter) }
 }

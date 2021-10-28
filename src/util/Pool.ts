@@ -1,25 +1,42 @@
-export class Pool<T extends object> {
-  constructor(private sockets: Set<T>) { }
+import { Message } from 'protobufjs/light'
+import { Adapter } from '../adapters/Adapter'
+import { Packet } from '../protocol/Packet'
 
-  include(sockets: T[]) {
-    for (const socket of sockets) {
-      this.sockets.add(socket)
+export class Pool<T extends object> {
+  private sessions: Set<T>
+
+  constructor(private adapter: Adapter<T>) {
+    this.sessions = new Set(adapter.sessions)
+  }
+
+  include(sessions: T[]) {
+    for (const session of sessions) {
+      this.sessions.add(session)
     }
     return this
   }
 
-  exclude(value: T | ((socket: T) => boolean)) {
+  exclude(value: T | ((session: T) => boolean)) {
     if (typeof value === 'function') {
-      this.sockets.forEach((socket) => {
-        if (!value(socket)) { this.sockets.delete(socket) }
+      this.sessions.forEach((session) => {
+        if (!value(session)) { this.sessions.delete(session) }
       })
     } else {
-      this.sockets.delete(value)
+      this.sessions.delete(value)
     }
     return this
+  }
+
+  send<T extends Message>(message: T) {
+    const bytes = message.$type.encode(message).finish()
+    const packet = new Packet({ name: message.$type.name, bytes })
+    const data = Packet.encode(packet).finish()
+    this.sessions.forEach((session) => {
+      this.adapter.send(session, data)
+    })
   }
 
   get() {
-    return Array.from(this.sockets)
+    return Array.from(this.sessions)
   }
 }
