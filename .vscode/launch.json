@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [{
+    "type": "pwa-node",
+    "request": "launch",
+    "name": "examples:websocket",
+    "skipFiles": ["<node_internals>/**"],
+    "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+    "args": ["${workspaceFolder}/src/examples/websocket.ts"]
+  }, {
+    "type": "pwa-node",
+    "request": "launch",
+    "name": "examples:bridge",
+    "skipFiles": ["<node_internals>/**"],
+    "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+    "args": ["${workspaceFolder}/src/examples/bridge.ts"]
+  }]
+}

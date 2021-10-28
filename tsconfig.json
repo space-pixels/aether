@@ -1,14 +1,28 @@
 {
-  "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@space-pixels/aether-adapter-direct": ["packages/adapter-direct/src"],
-      "@space-pixels/aether-adapter-websocket": ["packages/adapter-websocket/src"],
-      "@space-pixels/aether-client": ["packages/client/src"],
-      "@space-pixels/aether-core": ["packages/core/src"],
-      "@space-pixels/aether-server": ["packages/server/src"]
-    },
-    "noEmit": true
-  }
+    "rootDir": "./src",
+    "outDir": "./build",
+    "module": "CommonJS",
+    "lib": ["ES2020", "DOM"],
+    "target": "ES2020",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "allowJs": true,
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "noEmit": false,
+    "declarationMap": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "files": ["src/index.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]
 }
