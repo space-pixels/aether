@@ -15,7 +15,7 @@ export function createBridge(): Bridge {
     connection: {
       setDelegate(delegate) { connectionDelegate = delegate },
       connect() { return Promise.resolve() },
-      send(data: ArrayBuffer) { adapterDelegate.onMessage({}, data) },
+      send(data: ArrayBuffer) { adapterDelegate.onMessage(data, {}) },
       close() { }
     },
     adapter: {

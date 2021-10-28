@@ -16,7 +16,7 @@ export class WebsocketAdapter implements Adapter<Socket> {
 
       connection.on('message', (message) => {
         if (message.type !== 'binary') { return }
-        this.delegate.onMessage(connection, message.binaryData)
+        this.delegate.onMessage(message.binaryData, connection)
       })
 
       connection.on('close', (code, description) => {

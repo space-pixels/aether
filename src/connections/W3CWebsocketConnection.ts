@@ -30,7 +30,7 @@ export class W3CWebsocketConnection implements Connection {
     })
   }
 
-  public send(data: ArrayBuffer): void {
+  public send(data: Uint8Array): void {
     this.ws.send(data)
   }
 

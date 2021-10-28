@@ -17,24 +17,24 @@ export abstract class Server<S extends object> implements MessageHandlerTarget, 
   abstract onOpen?(session: S): void
   abstract onClose?(session: S): void
 
-  onMessage(session: S, data: ArrayBuffer) {
+  onMessage(data: ArrayBuffer, session: S,) {
     const packetData = new Uint8Array(data)
     const packet = Packet.decode(packetData)
     if (packet.transactionId) {
-      this.onMessageTransaction(session, packet)
+      this.onMessageTransaction(packet, session)
     } else {
-      this.onMessageDefault(session, packet)
+      this.onMessageDefault(packet, session)
     }
   }
 
-  protected onMessageDefault(session: S, { name, bytes }: Packet) {
+  protected onMessageDefault({ name, bytes }: Packet, session: S,) {
     const handler = this.messageHandlers?.get(name)
     if (!handler) { throw new Error(`no message handler defined for ${name}`) }
     const message = handler.type.$type.decode(bytes)
     handler.callback.call(this, message, session)
   }
 
-  protected async onMessageTransaction(session: S, { name, bytes, transactionId }: Packet) {
+  protected async onMessageTransaction({ name, bytes, transactionId }: Packet, session: S,) {
     const handler = this.transactionHandlers?.get(name)
     if (!handler) { throw new Error(`no transaction handler defined for ${name}`) }
     const request = handler.requestType.$type.decode(bytes)
