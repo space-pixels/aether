@@ -1,11 +1,11 @@
-import { client as WebSocketClient, connection as Session } from 'websocket'
+import { client as WebsocketClient, connection as WebsocketSession } from 'websocket'
 import { Connection } from './Connection'
 import { ConnectionDelegate } from './ConnectionDelegate'
 
 export class WebsocketConnection implements Connection {
   public delegate!: ConnectionDelegate
-  public ws = new WebSocketClient()
-  public session?: Session
+  public ws = new WebsocketClient()
+  public session?: WebsocketSession
 
   setDelegate(delegate: ConnectionDelegate) {
     this.delegate = delegate
