@@ -8,9 +8,9 @@
     "node": ">=v15.5.1"
   },
   "scripts": {
-    "serve": "tsc -w",
+    "serve": "snowpack build --watch",
     "prepack": "yarn clean && yarn build",
-    "build": "tsc -b",
+    "build": "snowpack build && tsc --emitDeclarationOnly",
     "clean": "rimraf -rf ./build"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "@types/uuid": "^8.0.0",
     "@types/websocket": "^1.0.4",
     "rimraf": "^3.0.2",
+    "snowpack": "^3.8.8",
     "ts-node": "^10.4.0",
     "typescript": "^4.0.0"
   }

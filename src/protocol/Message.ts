@@ -21,3 +21,5 @@ export function OnMessage<T extends Message>(type: MessageConstructor<T>) {
     target.messageHandlers.set(type.$type.name, { type, callback: descriptor.value })
   }
 }
+
+export { }

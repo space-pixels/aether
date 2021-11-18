@@ -4,3 +4,5 @@ export interface ConnectionDelegate {
   onClose?: (code: number, description?: string) => void
   onError?: (error: Error) => void
 }
+
+export { }

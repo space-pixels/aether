@@ -3,3 +3,5 @@ export interface AdapterDelegate {
   onMessage(data: ArrayBuffer, session: object): void
   onClose?(session: object, code: number, description?: string): void
 }
+
+export { }

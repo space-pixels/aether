@@ -23,3 +23,5 @@ export function OnTransaction<T extends Transaction>(types: T) {
     target.transactionHandlers.set(requestType.$type.name, { requestType, responseType, callback: descriptor.value })
   }
 }
+
+export { }

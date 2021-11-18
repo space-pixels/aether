@@ -6,3 +6,5 @@ export interface Connection {
   send(data: ArrayBuffer): void
   close(code: number, description?: string): void
 }
+
+export { }

@@ -5,3 +5,6 @@ export interface Adapter<T extends object> {
   setDelegate(delegate: AdapterDelegate): void
   send(session: T, data: ArrayBuffer): void
 }
+
+export { }
+
