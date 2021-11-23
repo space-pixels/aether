@@ -3,25 +3,26 @@ import { AdapterDelegate } from '../adapters/AdapterDelegate'
 import { Connection } from '../connections/Connection'
 import { ConnectionDelegate } from '../connections/ConnectionDelegate'
 
-export interface Bridge {
+export interface Bridge<T extends object> {
   connection: Connection
-  adapter: Adapter<object>
+  adapter: Adapter<T>
 }
 
-export function createBridge(): Bridge {
-  let adapterDelegate: AdapterDelegate
+export function createBridge<T extends object>(session: T): Bridge<T> {
+  let adapterDelegate: AdapterDelegate<T>
   let connectionDelegate: ConnectionDelegate
-  return {
+  const bridge: Bridge<T> = {
     connection: {
       setDelegate(delegate) { connectionDelegate = delegate },
       connect() { return Promise.resolve() },
-      send(data: ArrayBuffer) { adapterDelegate.onMessage(data, {}) },
+      send(data: ArrayBuffer) { adapterDelegate.onMessage(data, session) },
       close() { }
     },
     adapter: {
-      sessions: [],
+      sessions: [session],
       setDelegate(delegate) { adapterDelegate = delegate },
       send(_, data) { connectionDelegate.onMessage(data) }
     }
   }
+  return bridge
 }

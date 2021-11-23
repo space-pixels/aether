@@ -31,9 +31,13 @@ export abstract class Client implements ConnectionDelegate, MessageHandlerTarget
   }
 
   subscribe<T extends typeof Message>(type: T, next: (value: InstanceType<T>) => void) {
+    return this.observe(type).subscribe(next)
+  }
+
+  observe<T extends typeof Message>(type: T): Observable<InstanceType<T>> {
     if (!this.subscriptionHandlers.has(type.$type.name)) { this.registerSubscriptionHandler(type) }
     const { observable } = this.subscriptionHandlers.get(type.$type.name)!
-    return observable.subscribe(next as (value: Message) => void)
+    return observable as Observable<InstanceType<T>>
   }
 
   send<T extends Message>(message: T) {

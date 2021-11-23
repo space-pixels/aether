@@ -7,7 +7,7 @@ import { ExampleServer } from './server/ExampleServer'
 
 async function main() {
   // Create bridge
-  const { connection, adapter } = createBridge()
+  const { connection, adapter } = createBridge<object>({})
 
   // Create server
   new ExampleServer(adapter)
