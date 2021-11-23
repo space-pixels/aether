@@ -1,6 +1,6 @@
 import { Message } from 'protobufjs/light'
 import { Adapter } from '../adapters/Adapter'
-import { Packet } from '../protocol/Packet'
+import { Package } from '../protocol/Package'
 
 export class Pool<T extends object> {
   private sessions: Set<T>
@@ -28,11 +28,9 @@ export class Pool<T extends object> {
   }
 
   send<T extends Message>(message: T) {
-    const bytes = message.$type.encode(message).finish()
-    const packet = new Packet({ name: message.$type.name, bytes })
-    const data = Packet.encode(packet).finish()
+    const pkg = new Package(message)
     this.sessions.forEach((session) => {
-      this.adapter.send(session, data)
+      this.adapter.send(pkg, session)
     })
   }
 

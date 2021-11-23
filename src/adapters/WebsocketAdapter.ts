@@ -1,4 +1,5 @@
 import { connection as Socket, IServerConfig, server as WebSocketServer } from 'websocket'
+import { Package } from '../protocol/Package'
 import { Adapter } from './Adapter'
 import { AdapterDelegate } from './AdapterDelegate'
 
@@ -16,7 +17,8 @@ export class WebsocketAdapter implements Adapter<Socket> {
 
       connection.on('message', (message) => {
         if (message.type !== 'binary') { return }
-        this.delegate.onMessage(message.binaryData, connection)
+        const pkg = Package.decode(message.binaryData)
+        this.delegate.onMessage(pkg, connection)
       })
 
       connection.on('close', (code, description) => {
@@ -30,7 +32,7 @@ export class WebsocketAdapter implements Adapter<Socket> {
     this.delegate = delegate
   }
 
-  send(connection: Socket, data: ArrayBuffer) {
-    connection.send(data)
+  send(pkg: Package, connection: Socket) {
+    connection.send(pkg.encode())
   }
 }

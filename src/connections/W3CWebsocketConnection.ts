@@ -1,4 +1,5 @@
 import { ICloseEvent, w3cwebsocket as WebsocketClient } from 'websocket'
+import { Package } from '../protocol/Package'
 import { Connection } from './Connection'
 import { ConnectionDelegate } from './ConnectionDelegate'
 
@@ -19,7 +20,10 @@ export class W3CWebsocketConnection implements Connection {
         resolve()
       }
       this.ws.onmessage = (event) => {
-        this.delegate.onMessage(event.data as ArrayBuffer)
+        const data = event.data as Uint8Array
+        debugger
+        const pkg = Package.decode(data)
+        this.delegate.onMessage(pkg)
       }
       this.ws.onclose = ({ code, reason }: ICloseEvent) => {
         if (this.delegate.onClose) { this.delegate.onClose(code, reason) }
@@ -30,8 +34,8 @@ export class W3CWebsocketConnection implements Connection {
     })
   }
 
-  public send(data: Uint8Array): void {
-    this.ws.send(data)
+  public send(pkg: Package): void {
+    this.ws.send(pkg.encode())
   }
 
   public close(code: number, description?: string) {

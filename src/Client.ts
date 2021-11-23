@@ -4,7 +4,7 @@ import { v4 } from 'uuid'
 import { Connection } from './connections/Connection'
 import { ConnectionDelegate } from './connections/ConnectionDelegate'
 import { MessageConstructor, MessageHandler, MessageHandlerTarget } from './protocol/Message'
-import { Packet } from './protocol/Packet'
+import { Package } from './protocol/Package'
 import { Transaction, TransactionHandlerTarget } from './protocol/Transaction'
 
 export interface SubscriptionHandlerTarget {
@@ -41,39 +41,32 @@ export abstract class Client implements ConnectionDelegate, MessageHandlerTarget
   }
 
   send<T extends Message>(message: T) {
-    const bytes = message.$type.encode(message).finish()
-    const packet = new Packet({ name: message.$type.name, bytes })
-    const data = Packet.encode(packet).finish()
-    this.connection.send(data)
+    const pkg = new Package(message)
+    this.connection.send(pkg)
   }
 
   request<T extends Transaction>(transaction: T, request: InstanceType<T[0]>): Promise<InstanceType<T[1]>> {
     const transactionId = v4()
-    const bytes = request.$type.encode(request).finish()
-    const packet = new Packet({ name: request.$type.name, bytes, transactionId })
-    const data = Packet.encode(packet).finish()
-    this.connection.send(data)
+    const pkg = new Package(request, transactionId)
+    this.connection.send(pkg)
     return this.awaitTransaction<InstanceType<T[1]>>(transactionId, transaction[1] as MessageConstructor)
   }
 
-  onMessage(data: ArrayBuffer) {
-    const packetData = new Uint8Array(data)
-    const packet = Packet.decode(packetData)
-    if (packet.transactionId) {
-      if (this.transactionHandlers?.has(packet.transactionId)) {
-        const { type, callback } = this.transactionHandlers!.get(packet.transactionId)!
-        callback(type.$type.decode(packet.bytes))
+  onMessage(pkg: Package) {
+    if (pkg.transactionId) {
+      if (this.transactionHandlers?.has(pkg.transactionId)) {
+        const { callback } = this.transactionHandlers!.get(pkg.transactionId)!
+        callback(pkg.message)
       }
     } else {
-      if (this.messageHandlers?.has(packet.name)) {
-        const { type, callback } = this.messageHandlers!.get(packet.name)!
-        callback.call(this, type.$type.decode(packet.bytes))
+      if (this.messageHandlers?.has(pkg.name)) {
+        const { callback } = this.messageHandlers!.get(pkg.name)!
+        callback.call(this, pkg.message)
       }
-      if (this.subscriptionHandlers?.has(packet.name)) {
-        const { type, subscribers } = this.subscriptionHandlers.get(packet.name)!
-        const message = type.$type.decode(packet.bytes)
+      if (this.subscriptionHandlers?.has(pkg.name)) {
+        const { subscribers } = this.subscriptionHandlers.get(pkg.name)!
         for (const subscriber of subscribers) {
-          subscriber.next(message)
+          subscriber.next(pkg.message)
         }
       }
     }

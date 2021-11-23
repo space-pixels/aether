@@ -1,4 +1,5 @@
 import { client as WebsocketClient, connection as WebsocketSession } from 'websocket'
+import { Package } from '../protocol/Package'
 import { Connection } from './Connection'
 import { ConnectionDelegate } from './ConnectionDelegate'
 
@@ -20,7 +21,8 @@ export class WebsocketConnection implements Connection {
         })
         session.on('message', (data) => {
           if (data.type !== 'binary') { return }
-          this.delegate.onMessage(data.binaryData)
+          const pkg = Package.decode(data.binaryData)
+          this.delegate.onMessage(pkg)
         })
         session.on('error', (error) => {
           if (this.delegate.onError) { this.delegate.onError(error) }
@@ -33,9 +35,9 @@ export class WebsocketConnection implements Connection {
     })
   }
 
-  public send(data: ArrayBuffer): void {
+  public send(pkg: Package): void {
     if (!this.session) { return }
-    this.session.send(data)
+    this.session.send(pkg.encode())
   }
 
   public close(code: number, description?: string) {
