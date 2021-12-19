@@ -1,16 +1,18 @@
 import { Message } from 'protobufjs/light'
 import { Adapter } from './adapters/Adapter'
 import { AdapterDelegate } from './adapters/AdapterDelegate'
-import { MessageHandler, MessageHandlerTarget } from './protocol/Message'
+import { AetherSide, triggerHandlers } from './protocol/Listener'
+import { } from './protocol/Message'
 import { Package } from './protocol/Package'
 import { TransactionHandler, TransactionHandlerTarget } from './protocol/Transaction'
 import { Pool } from './util/Pool'
 
-export abstract class Server<S extends object> implements MessageHandlerTarget, TransactionHandlerTarget<TransactionHandler>, AdapterDelegate {
-  public messageHandlers!: Map<string, MessageHandler>
+export abstract class Server<S extends object> implements TransactionHandlerTarget<TransactionHandler>, AdapterDelegate {
+  public adapter: Adapter<S>
   public transactionHandlers!: Map<string, TransactionHandler>
 
-  constructor(public adapter: Adapter<S>) {
+  constructor(adapter: Adapter<S>) {
+    this.adapter = adapter
     adapter.setDelegate(this)
   }
 
@@ -18,19 +20,11 @@ export abstract class Server<S extends object> implements MessageHandlerTarget, 
   abstract onClose?(session: S): void
 
   onMessage(pkg: Package, session: S,) {
-    // const packetData = new Uint8Array(data)
-    // const packet = Packet.decode(packetData)
     if (pkg.transactionId) {
       this.onMessageTransaction(pkg, session)
     } else {
-      this.onMessageDefault(pkg, session)
+      triggerHandlers(AetherSide.SERVER, pkg, session)
     }
-  }
-
-  protected onMessageDefault({ name, message }: Package, session: S,) {
-    const handler = this.messageHandlers?.get(name)
-    if (!handler) { throw new Error(`no message handler defined for ${name}`) }
-    handler.callback.call(this, message, session)
   }
 
   protected async onMessageTransaction({ name, message, transactionId }: Package, session: S,) {

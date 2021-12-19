@@ -1,16 +1,22 @@
 import { Client } from '../../Client'
-import { OnMessage } from '../../protocol/Message'
+import { Connection } from '../../connections/Connection'
+import { Aether, AetherListener, AetherSide } from '../../protocol/Listener'
 import { ExampleState } from '../protocol/ExampleState'
 
+@AetherListener(AetherSide.CLIENT)
 export class ExampleClient extends Client {
+  public aether!: Aether
   public state!: ExampleState
+
+  constructor(connection: Connection) {
+    super(connection)
+    this.aether.subscribe(ExampleState, (response) => {
+      console.info(`~> [ExampleClient] subscription response ${response.name} ${response.enabled}`)
+    })
+  }
 
   onOpen() {
     console.info(`~> [ExampleClient] session connected`)
-  }
-
-  @OnMessage(ExampleState) onExampleState(state: ExampleState) {
-    console.info(`~> [ExampleClient] session received state with name ${state.name}`, state)
   }
 
   onClose() {
