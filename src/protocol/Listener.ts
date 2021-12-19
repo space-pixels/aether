@@ -1,5 +1,5 @@
 import { Message } from 'protobufjs/light'
-import { Observable, Subscriber } from 'rxjs'
+import { Observable, Subscriber, Subscription } from 'rxjs'
 import { MessageConstructor, MessageHandler } from './Message'
 import { Package } from './Package'
 
@@ -7,7 +7,7 @@ export enum AetherSide { CLIENT, SERVER }
 
 export interface Aether {
   side: AetherSide
-  subscribe<T extends typeof Message>(type: T, next: (value: InstanceType<T>) => void): void
+  subscribe<T extends typeof Message>(type: T, next: (value: InstanceType<T>) => void): Subscription
   observe<T extends typeof Message>(type: T): Observable<InstanceType<T>>
 }
 
