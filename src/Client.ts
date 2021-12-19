@@ -2,6 +2,7 @@ import { Message } from 'protobufjs/light'
 import { v4 } from 'uuid'
 import { Connection } from './connections/Connection'
 import { ConnectionDelegate } from './connections/ConnectionDelegate'
+import { setClientInstance } from './decorators/ClientInstance'
 import { AetherSide } from './decorators/Listener'
 import { MessageConstructor, MessageHandler } from './protocol/Message'
 import { Package } from './protocol/Package'
@@ -17,6 +18,7 @@ export abstract class Client implements ConnectionDelegate, TransactionHandlerTa
 
   constructor(public connection: Connection) {
     connection.setDelegate(this)
+    setClientInstance(this)
   }
 
   send<T extends Message>(message: T) {

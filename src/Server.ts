@@ -2,6 +2,7 @@ import { Message } from 'protobufjs/light'
 import { Adapter } from './adapters/Adapter'
 import { AdapterDelegate } from './adapters/AdapterDelegate'
 import { AetherSide } from './decorators/Listener'
+import { setServerInstance } from './decorators/ServerInstance'
 import { } from './protocol/Message'
 import { Package } from './protocol/Package'
 import { TransactionHandler, TransactionHandlerTarget } from './protocol/Transaction'
@@ -15,6 +16,7 @@ export abstract class Server<S extends object> implements TransactionHandlerTarg
   constructor(adapter: Adapter<S>) {
     this.adapter = adapter
     adapter.setDelegate(this)
+    setServerInstance(this)
   }
 
   abstract onOpen?(session: S): void

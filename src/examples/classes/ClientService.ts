@@ -1,9 +1,11 @@
 import { Observable } from 'rxjs'
-import { AetherSide, Listener, Observe, OnMessage } from '../..'
+import { AetherSide, Client, ClientInstance, Listener, Observe, OnMessage } from '../..'
 import { ExampleState } from '../protocol/ExampleState'
 
 @Listener(AetherSide.CLIENT)
 export class ClientService {
+  @ClientInstance() client!: Client
+
   @Observe(ExampleState) exampleState$!: Observable<ExampleState>
 
   constructor() {
