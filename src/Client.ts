@@ -2,10 +2,11 @@ import { Message } from 'protobufjs/light'
 import { v4 } from 'uuid'
 import { Connection } from './connections/Connection'
 import { ConnectionDelegate } from './connections/ConnectionDelegate'
-import { AetherSide, triggerHandlers } from './protocol/Listener'
+import { AetherSide } from './decorators/Listener'
 import { MessageConstructor, MessageHandler } from './protocol/Message'
 import { Package } from './protocol/Package'
 import { Transaction, TransactionHandlerTarget } from './protocol/Transaction'
+import { triggerHandlers } from './util/handlers'
 
 export abstract class Client implements ConnectionDelegate, TransactionHandlerTarget {
   public transactionHandlers = new Map<string, MessageHandler>()
@@ -29,9 +30,8 @@ export abstract class Client implements ConnectionDelegate, TransactionHandlerTa
         const { callback } = this.transactionHandlers!.get(pkg.transactionId)!
         callback(pkg.message)
       }
-    } else {
-      triggerHandlers(AetherSide.CLIENT, pkg)
     }
+    triggerHandlers(AetherSide.CLIENT, pkg)
   }
 
   request<T extends Transaction, REQ extends InstanceType<T[0]>, RES extends InstanceType<T[1]>>(transaction: T, request: REQ): Promise<RES> {
@@ -40,7 +40,7 @@ export abstract class Client implements ConnectionDelegate, TransactionHandlerTa
     this.connection.send(pkg)
     return new Promise((resolve) => {
       const callback = (response: Message) => { resolve(response as RES) }
-      this.transactionHandlers.set(transactionId, { target: this, type: transaction[1] as MessageConstructor, callback })
+      this.transactionHandlers.set(transactionId, { type: transaction[1] as MessageConstructor, side: AetherSide.CLIENT, callback })
     })
   }
 }

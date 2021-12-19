@@ -1,17 +1,17 @@
-import { Client } from '../../Client'
-import { Connection } from '../../connections/Connection'
-import { Aether, AetherListener, AetherSide } from '../../protocol/Listener'
+import { Observable } from 'rxjs'
+import { AetherSide, Client, Connection, Listener, Observe } from '../..'
 import { ExampleState } from '../protocol/ExampleState'
 
-@AetherListener(AetherSide.CLIENT)
+@Listener(AetherSide.CLIENT)
 export class ExampleClient extends Client {
-  public aether!: Aether
   public state!: ExampleState
+
+  @Observe(ExampleState) exampleState$!: Observable<ExampleState>
 
   constructor(connection: Connection) {
     super(connection)
-    this.aether.subscribe(ExampleState, (response) => {
-      console.info(`~> [ExampleClient] subscription response ${response.name} ${response.enabled}`)
+    this.exampleState$.subscribe((state) => {
+      console.info(`~> [ExampleClient] subscription response ${state.name} ${state.enabled}`)
     })
   }
 

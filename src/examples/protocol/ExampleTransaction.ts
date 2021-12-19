@@ -1,4 +1,4 @@
-import { Transaction } from '../../protocol/Transaction'
+import { Transaction } from '../..'
 import { ExampleRequest } from './ExampleRequest'
 import { ExampleResponse } from './ExampleResponse'
 

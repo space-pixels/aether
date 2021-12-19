@@ -17,6 +17,7 @@ export class WebsocketAdapter implements Adapter<Socket> {
 
       connection.on('message', (message) => {
         if (message.type !== 'binary') { return }
+        if (message.binaryData.length === 0) { return }
         const pkg = Package.decode(message.binaryData)
         this.delegate.onMessage(pkg, connection)
       })

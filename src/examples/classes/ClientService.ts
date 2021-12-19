@@ -1,22 +1,18 @@
-import { Aether, AetherListener, AetherSide } from '../../protocol/Listener'
-import { OnMessage } from '../../protocol/Message'
+import { Observable } from 'rxjs'
+import { AetherSide, Listener, Observe, OnMessage } from '../..'
 import { ExampleState } from '../protocol/ExampleState'
 
-@AetherListener(AetherSide.CLIENT)
+@Listener(AetherSide.CLIENT)
 export class ClientService {
-  public aether!: Aether
+  @Observe(ExampleState) exampleState$!: Observable<ExampleState>
 
   constructor() {
-    this.aether.subscribe(ExampleState, (response) => {
-      console.info(`~> [ClientService] subscription response ${response.name} ${response.enabled}`)
+    this.exampleState$.subscribe((state) => {
+      console.info(`~> [ClientService] subscription response ${state.name} ${state.enabled}`)
     })
   }
 
   @OnMessage(ExampleState) onExampleState(state: ExampleState) {
     console.info(`~> [ClientService] session received state with name ${state.name}`, state)
-  }
-
-  async exampleTransaction() {
-    debugger
   }
 }

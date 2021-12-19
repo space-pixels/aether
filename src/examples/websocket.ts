@@ -1,6 +1,5 @@
 import { createServer } from 'http'
-import { WebsocketAdapter } from '../adapters/WebsocketAdapter'
-import { WebsocketConnection } from '../connections/WebsocketConnection'
+import { WebsocketAdapter, WebsocketConnection } from '..'
 import { ClientService } from './classes/ClientService'
 import { ServerService } from './classes/ServerService'
 import { ExampleClient } from './client/ExampleClient'

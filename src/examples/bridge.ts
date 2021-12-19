@@ -1,4 +1,4 @@
-import { createBridge } from '../util/bridge'
+import { createBridge } from '..'
 import { ClientService } from './classes/ClientService'
 import { ServerService } from './classes/ServerService'
 import { ExampleClient } from './client/ExampleClient'

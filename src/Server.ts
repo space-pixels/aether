@@ -1,10 +1,11 @@
 import { Message } from 'protobufjs/light'
 import { Adapter } from './adapters/Adapter'
 import { AdapterDelegate } from './adapters/AdapterDelegate'
-import { AetherSide, triggerHandlers } from './protocol/Listener'
+import { AetherSide } from './decorators/Listener'
 import { } from './protocol/Message'
 import { Package } from './protocol/Package'
 import { TransactionHandler, TransactionHandlerTarget } from './protocol/Transaction'
+import { triggerHandlers } from './util/handlers'
 import { Pool } from './util/Pool'
 
 export abstract class Server<S extends object> implements TransactionHandlerTarget<TransactionHandler>, AdapterDelegate {
@@ -20,11 +21,8 @@ export abstract class Server<S extends object> implements TransactionHandlerTarg
   abstract onClose?(session: S): void
 
   onMessage(pkg: Package, session: S,) {
-    if (pkg.transactionId) {
-      this.onMessageTransaction(pkg, session)
-    } else {
-      triggerHandlers(AetherSide.SERVER, pkg, session)
-    }
+    if (pkg.transactionId) { this.onMessageTransaction(pkg, session) }
+    triggerHandlers(AetherSide.SERVER, pkg, session)
   }
 
   protected async onMessageTransaction({ name, message, transactionId }: Package, session: S,) {
