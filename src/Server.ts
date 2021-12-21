@@ -5,13 +5,11 @@ import { AetherSide } from './decorators/Listener'
 import { setServerInstance } from './decorators/ServerInstance'
 import { } from './protocol/Message'
 import { Package } from './protocol/Package'
-import { TransactionHandler, TransactionHandlerTarget } from './protocol/Transaction'
-import { triggerHandlers } from './util/handlers'
+import { transactionHandlers, triggerHandlers } from './util/handlers'
 import { Pool } from './util/Pool'
 
-export abstract class Server<S extends object> implements TransactionHandlerTarget<TransactionHandler>, AdapterDelegate {
+export abstract class Server<S extends object> implements AdapterDelegate {
   public adapter: Adapter<S>
-  public transactionHandlers!: Map<string, TransactionHandler>
 
   constructor(adapter: Adapter<S>) {
     this.adapter = adapter
@@ -23,15 +21,14 @@ export abstract class Server<S extends object> implements TransactionHandlerTarg
   abstract onClose?(session: S): void
 
   onMessage(pkg: Package, session: S,) {
-    if (pkg.transactionId) { this.onMessageTransaction(pkg, session) }
+    if (pkg.transactionId) {
+      for (const handler of transactionHandlers.filter((handler) => handler.requestType.$type.name === pkg.name)) {
+        handler.callback(pkg.message, session).then((response) => {
+          this.send(session, response, pkg.transactionId)
+        })
+      }
+    }
     triggerHandlers(AetherSide.SERVER, pkg, session)
-  }
-
-  protected async onMessageTransaction({ name, message, transactionId }: Package, session: S,) {
-    const handler = this.transactionHandlers?.get(name)
-    if (!handler) { throw new Error(`no transaction handler defined for ${name}`) }
-    const response = await handler.callback.call(this, message, session)
-    this.send(session, response, transactionId)
   }
 
   send<T extends Message>(session: S, message: T, transactionId?: string) {

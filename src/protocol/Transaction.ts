@@ -1,9 +1,5 @@
 import { Constructor, Message } from 'protobufjs/light'
-import { MessageConstructor, MessageHandler } from './Message'
-
-export interface TransactionHandlerTarget<T = MessageHandler> {
-  transactionHandlers: Map<string, T>
-}
+import { MessageConstructor } from './Message'
 
 export type Transaction<Req extends Message = Message, Res extends Message = Message> = [Constructor<Req>, Constructor<Res>]
 

@@ -6,11 +6,11 @@ import { setClientInstance } from './decorators/ClientInstance'
 import { AetherSide } from './decorators/Listener'
 import { MessageConstructor, MessageHandler } from './protocol/Message'
 import { Package } from './protocol/Package'
-import { Transaction, TransactionHandlerTarget } from './protocol/Transaction'
+import { Transaction } from './protocol/Transaction'
 import { triggerHandlers } from './util/handlers'
 
-export abstract class Client implements ConnectionDelegate, TransactionHandlerTarget {
-  public transactionHandlers = new Map<string, MessageHandler>()
+export abstract class Client implements ConnectionDelegate {
+  private transactions = new Map<string, MessageHandler>()
 
   abstract onOpen?(): void
   abstract onClose?(code: number, description?: string): void
@@ -27,11 +27,9 @@ export abstract class Client implements ConnectionDelegate, TransactionHandlerTa
   }
 
   onMessage(pkg: Package) {
-    if (pkg.transactionId) {
-      if (this.transactionHandlers?.has(pkg.transactionId)) {
-        const { callback } = this.transactionHandlers!.get(pkg.transactionId)!
-        callback(pkg.message)
-      }
+    if (pkg.transactionId && this.transactions.has(pkg.transactionId)) {
+      const { callback } = this.transactions.get(pkg.transactionId)!
+      callback(pkg.message)
     }
     triggerHandlers(AetherSide.CLIENT, pkg)
   }
@@ -42,7 +40,7 @@ export abstract class Client implements ConnectionDelegate, TransactionHandlerTa
     this.connection.send(pkg)
     return new Promise((resolve) => {
       const callback = (response: Message) => { resolve(response as RES) }
-      this.transactionHandlers.set(transactionId, { type: transaction[1] as MessageConstructor, side: AetherSide.CLIENT, callback })
+      this.transactions.set(transactionId, { type: transaction[1] as MessageConstructor, side: AetherSide.CLIENT, callback })
     })
   }
 }

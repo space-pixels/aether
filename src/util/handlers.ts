@@ -2,8 +2,10 @@ import { AetherSide } from '../decorators/Listener'
 import { SubscriptionHandler } from '../decorators/Observe'
 import { MessageHandler } from '../protocol/Message'
 import { Package } from '../protocol/Package'
+import { TransactionHandler } from '../protocol/Transaction'
 
 export const messageHandlers: MessageHandler[] = []
+export const transactionHandlers: TransactionHandler[] = []
 export const subscriptionHandlers: SubscriptionHandler[] = []
 
 export function triggerHandlers(side: AetherSide, pkg: Package, session?: object) {

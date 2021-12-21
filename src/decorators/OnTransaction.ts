@@ -1,11 +1,13 @@
 import { MessageConstructor } from '../protocol/Message'
-import { Transaction, TransactionHandler, TransactionHandlerTarget } from '../protocol/Transaction'
+import { Transaction } from '../protocol/Transaction'
+import { Target } from './Listener'
 
-export function OnTransaction<T extends Transaction>(types: T) {
-  return function (target: TransactionHandlerTarget<TransactionHandler>, propertyKey: string, descriptor: PropertyDescriptor) {
-    if (!target.transactionHandlers) { target.transactionHandlers = new Map() }
-    const requestType = types[0] as MessageConstructor
-    const responseType = types[1] as MessageConstructor
-    target.transactionHandlers.set(requestType.$type.name, { requestType, responseType, callback: descriptor.value })
+export const SymOnTransaction = Symbol('AetherOnTransaction')
+
+export function OnTransaction<T extends Transaction>([request, response]: T) {
+  return function (target: any, propertyKey: string) {
+    const Base = target as Target
+    Base[SymOnTransaction] = Base[SymOnTransaction] || new Map()
+    Base[SymOnTransaction]!.set(propertyKey, [request as MessageConstructor, response as MessageConstructor])
   }
 }

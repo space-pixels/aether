@@ -21,7 +21,6 @@ export class W3CWebsocketConnection implements Connection {
       }
       this.ws.onmessage = (event) => {
         const data = event.data as Uint8Array
-        debugger
         const pkg = Package.decode(data)
         this.delegate.onMessage(pkg)
       }
