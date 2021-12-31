@@ -36,5 +36,9 @@ export abstract class Server<S extends object> implements AdapterDelegate {
     this.adapter.send(pkg, session)
   }
 
+  destroy() {
+    setServerInstance(undefined)
+  }
+
   get pool() { return new Pool<S>(this.adapter) }
 }

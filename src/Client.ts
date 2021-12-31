@@ -40,7 +40,16 @@ export abstract class Client implements ConnectionDelegate {
     this.connection.send(pkg)
     return new Promise((resolve) => {
       const callback = (response: Message) => { resolve(response as RES) }
-      this.transactions.set(transactionId, { type: transaction[1] as MessageConstructor, side: AetherSide.CLIENT, callback })
+      const handler: MessageHandler = {
+        type: transaction[1] as MessageConstructor, side: AetherSide.CLIENT, callback, destroy: () => {
+          this.transactions.delete(transactionId)
+        }
+      }
+      this.transactions.set(transactionId, handler)
     })
+  }
+
+  destroy() {
+    setClientInstance(undefined)
   }
 }
