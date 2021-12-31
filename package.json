@@ -1,6 +1,6 @@
 {
   "name": "@space-pixels/aether",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "main": "build/index.js",
   "typings": "build/index.d.js",
   "license": "MIT",
